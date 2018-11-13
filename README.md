@@ -1,2 +1,2 @@
 # ardio
-Arduino firmware that make a customizable USB I/O peripheral
+Arduino firmware that makes it a customizable USB I/O peripheral
