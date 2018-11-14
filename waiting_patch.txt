@@ -1,0 +1,101 @@
+diff -ur ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/Arduino.h ./hardware/arduino/cores/arduino/Arduino.h
+--- ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/Arduino.h	2012-03-11 17:30:39.000000000 -0400
++++ ./hardware/arduino/cores/arduino/Arduino.h	2012-07-08 21:39:04.124924882 -0400
+@@ -15,6 +15,9 @@
+ extern "C"{
+ #endif
+ 
++// Allow functions that "wait" to do something useful
++void yield(void);
++
+ #define HIGH 0x1
+ #define LOW  0x0
+ 
+diff -ur ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/HardwareSerial.cpp ./hardware/arduino/cores/arduino/HardwareSerial.cpp
+--- ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/HardwareSerial.cpp	2012-03-11 17:30:42.000000000 -0400
++++ ./hardware/arduino/cores/arduino/HardwareSerial.cpp	2012-07-08 21:38:09.676925762 -0400
+@@ -377,7 +377,11 @@
+ void HardwareSerial::flush()
+ {
+   while (_tx_buffer->head != _tx_buffer->tail)
+-    ;
++    yield();
++}
++bool HardwareSerial::waiting()
++{
++  return (_tx_buffer->head != _tx_buffer->tail);
+ }
+ 
+ size_t HardwareSerial::write(uint8_t c)
+diff -ur ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/HardwareSerial.h ./hardware/arduino/cores/arduino/HardwareSerial.h
+--- ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/HardwareSerial.h	2012-03-11 17:30:41.000000000 -0400
++++ ./hardware/arduino/cores/arduino/HardwareSerial.h	2012-06-30 13:31:37.368988375 -0400
+@@ -56,6 +56,7 @@
+     virtual int read(void);
+     virtual void flush(void);
+     virtual size_t write(uint8_t);
++    virtual bool waiting();
+     using Print::write; // pull in write(str) and write(buf, size) from Print
+     operator bool();
+ };
+diff -ur ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/Stream.h ./hardware/arduino/cores/arduino/Stream.h
+--- ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/Stream.h	2012-03-11 17:30:39.000000000 -0400
++++ ./hardware/arduino/cores/arduino/Stream.h	2012-06-30 13:31:09.236989156 -0400
+@@ -49,6 +49,7 @@
+     virtual int read() = 0;
+     virtual int peek() = 0;
+     virtual void flush() = 0;
++    virtual bool waiting() = 0;
+ 
+     Stream() {_timeout=1000;}
+ 
+diff -ur ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/wiring_analog.c ./hardware/arduino/cores/arduino/wiring_analog.c
+--- ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/wiring_analog.c	2012-03-11 17:30:37.000000000 -0400
++++ ./hardware/arduino/cores/arduino/wiring_analog.c	2012-07-08 21:39:24.760923989 -0400
+@@ -75,7 +75,8 @@
+ 	sbi(ADCSRA, ADSC);
+ 
+ 	// ADSC is cleared when the conversion finishes
+-	while (bit_is_set(ADCSRA, ADSC));
++	while (bit_is_set(ADCSRA, ADSC))
++		yield();
+ 
+ 	// we have to read ADCL first; doing so locks both ADCL
+ 	// and ADCH until ADCH is read.  reading ADCL second would
+diff -ur ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/wiring.c ./hardware/arduino/cores/arduino/wiring.c
+--- ../orig/arduino-1.0.1/hardware/arduino/cores/arduino/wiring.c	2012-03-11 17:30:42.000000000 -0400
++++ ./hardware/arduino/cores/arduino/wiring.c	2012-07-08 21:39:56.168923139 -0400
+@@ -115,6 +115,7 @@
+ 			ms--;
+ 			start += 1000;
+ 		}
++		yield();
+ 	}
+ }
+ 
+diff -ur ../orig/arduino-1.0.1/libraries/SoftwareSerial/SoftwareSerial.cpp ./libraries/SoftwareSerial/SoftwareSerial.cpp
+--- ../orig/arduino-1.0.1/libraries/SoftwareSerial/SoftwareSerial.cpp	2012-03-11 17:30:26.000000000 -0400
++++ ./libraries/SoftwareSerial/SoftwareSerial.cpp	2012-06-30 13:35:59.512981072 -0400
+@@ -501,6 +501,11 @@
+   SREG = oldSREG;
+ }
+ 
++void SoftwareSerial::waiting()
++{
++	return _receive_buffer_head != _receive_buffer_tail;
++}
++
+ int SoftwareSerial::peek()
+ {
+   if (!isListening())
+diff -ur ../orig/arduino-1.0.1/libraries/SoftwareSerial/SoftwareSerial.h ./libraries/SoftwareSerial/SoftwareSerial.h
+--- ../orig/arduino-1.0.1/libraries/SoftwareSerial/SoftwareSerial.h	2012-03-11 17:30:32.000000000 -0400
++++ ./libraries/SoftwareSerial/SoftwareSerial.h	2012-06-30 13:35:04.384982609 -0400
+@@ -93,6 +93,7 @@
+   virtual int read();
+   virtual int available();
+   virtual void flush();
++  virtual bool waiting();
+   
+   using Print::write;
+ 
