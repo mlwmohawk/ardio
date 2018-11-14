@@ -57,10 +57,10 @@ void stream_test(int fd)
 
     size_t size;
     int cmdndx=0;
-	char buffer[8192];
+    char buffer[8192];
     time_t tstart = time(0);
-	while(1)
-	{
+    while(1)
+    {
         int retry;
         size = writecmd(fd, test_commands[cmdndx]);
         for(size=0,retry=0; retry < 10 && size == 0; size = readresp(fd, buffer, sizeof(buffer))) ;
@@ -74,7 +74,7 @@ void stream_test(int fd)
 
         if(time(0) - tstart > 5)
             break;
-	}
+    }
 }
 
 // Blink the on-board LED using faux arduino functions
@@ -111,26 +111,26 @@ void blink_ardio(int fd, int seconds)
 
 int main(int argc, char **argv)
 {
-	char *device = "/dev/ttyACM0";
-	int opt;
+    char *device = "/dev/ttyACM0";
+    int opt;
 
-	while( (opt = getopt(argc, argv, "s:d:")) != -1)
-	{
-		switch(opt)
-		{
-			case 'd':
-				device = optarg;
-				printf("using device: %s\n", optarg);
-				break;
-		}
-	}
-	int fd = ardioOpen(device);
+    while( (opt = getopt(argc, argv, "s:d:")) != -1)
+    {
+        switch(opt)
+        {
+            case 'd':
+                device = optarg;
+                printf("using device: %s\n", optarg);
+                break;
+        }
+    }
+    int fd = ardioOpen(device);
 
-	if(fd < 0)
-	{
-		perror("Count open device");
-		exit(-1);
-	}
+    if(fd < 0)
+    {
+        perror("Can not open device");
+        exit(-1);
+    }
 
     blink_faux(5);
     stream_test(fd);

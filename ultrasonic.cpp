@@ -39,18 +39,18 @@
 
 UltrasonicSensor::UltrasonicSensor(int trigger)
 {
-	m_start=0;
-	m_trigger = trigger;
+    m_start=0;
+    m_trigger = trigger;
     m_sense = trigger;
-	m_state = SENSOR_STATE_T0;	// Start of transmit pulse
+    m_state = SENSOR_STATE_T0;  // Start of transmit pulse
 }
 
 UltrasonicSensor::UltrasonicSensor(int trigger, int sense)
 {
-	m_start=0;
-	m_trigger = trigger;
+    m_start=0;
+    m_trigger = trigger;
     m_sense = sense;
-	m_state = SENSOR_STATE_T0;	// Start of transmit pulse
+    m_state = SENSOR_STATE_T0;  // Start of transmit pulse
 }
 
 UltrasonicSensor::~UltrasonicSensor()
@@ -72,23 +72,23 @@ void UltrasonicSensor::setup()
  */
 unsigned long usec2mm(unsigned long usecStart, unsigned long usecEnd)
 {
-	// A long is be 32 bits, this calculation should not overflow
-	unsigned long mm = longDiff(usecStart, usecEnd);
-	mm = (mm*1716)/10000;
-	return mm;
+    // A long is be 32 bits, this calculation should not overflow
+    unsigned long mm = longDiff(usecStart, usecEnd);
+    mm = (mm*1716)/10000;
+    return mm;
 }
 
 void UltrasonicSensor::changeState(int state)
 {
-	m_prev_state_time = m_state_time;
-	m_state_time = m_now;
-	m_state = state;
+    m_prev_state_time = m_state_time;
+    m_state_time = m_now;
+    m_state = state;
 }
 
 void UltrasonicSensor::timeout()
 {
-	m_value = 20000;
-	changeState(SENSOR_STATE_T0);
+    m_value = 20000;
+    changeState(SENSOR_STATE_T0);
 }
 
 unsigned long UltrasonicSensor::getvalue(void)
@@ -110,51 +110,51 @@ unsigned long UltrasonicSensor::getvalue(void)
  */ 
 void UltrasonicSensor::loop()
 {
-	m_now = micros();
+    m_now = micros();
 
-	switch(m_state)
-	{
-		case SENSOR_STATE_T0:		// Start, initiate a ping
-			m_state = SENSOR_STATE_T1;
+    switch(m_state)
+    {
+        case SENSOR_STATE_T0:       // Start, initiate a ping
+            m_state = SENSOR_STATE_T1;
             if(m_sense != m_trigger)
-			    pinMode(m_sense, INPUT);
-			pinMode(m_trigger, OUTPUT);
-			digitalWrite(m_trigger, 1);
-			m_start = micros();
-			m_state_time = 0;
-			break;
-		case SENSOR_STATE_T1:		// We've started the ping, now time it
-			if(longDiff(m_start, m_now) > 5)
-			{ 	// Stop ping, now wait to settle
-				digitalWrite(m_trigger, 0);
+                pinMode(m_sense, INPUT);
+            pinMode(m_trigger, OUTPUT);
+            digitalWrite(m_trigger, 1);
+            m_start = micros();
+            m_state_time = 0;
+            break;
+        case SENSOR_STATE_T1:       // We've started the ping, now time it
+            if(longDiff(m_start, m_now) > 5)
+            {   // Stop ping, now wait to settle
+                digitalWrite(m_trigger, 0);
                 if(m_sense == m_trigger)
-				    pinMode(m_sense, INPUT);
-				changeState(SENSOR_STATE_T2);
-			}
-			break;
-		case SENSOR_STATE_T2:		// Wait for sensor to settle
-			if(longDiff(m_state_time, m_now) > 150)
-				changeState(SENSOR_STATE_T3);
+                    pinMode(m_sense, INPUT);
+                changeState(SENSOR_STATE_T2);
+            }
+            break;
+        case SENSOR_STATE_T2:       // Wait for sensor to settle
+            if(longDiff(m_state_time, m_now) > 150)
+                changeState(SENSOR_STATE_T3);
 
-		case SENSOR_STATE_T3:		// Waiting for rise on leading edge
-			if(digitalRead(m_sense))
-				changeState(SENSOR_STATE_T4);
-			else if(longDiff(m_start, m_now) > 500)
-				timeout();
-			break;
-		case SENSOR_STATE_T4:		// Waiting for dropping edge of signal
-			if(!digitalRead(m_sense))
-			{
-				m_value = usec2mm(m_state_time, m_now);
-				changeState(SENSOR_STATE_T0);
-			}
-			else if(longDiff(m_start, m_now) > 21000)
-				timeout();
-			break;
-		default:
-			timeout();
-			break;
-	}
+        case SENSOR_STATE_T3:       // Waiting for rise on leading edge
+            if(digitalRead(m_sense))
+                changeState(SENSOR_STATE_T4);
+            else if(longDiff(m_start, m_now) > 500)
+                timeout();
+            break;
+        case SENSOR_STATE_T4:       // Waiting for dropping edge of signal
+            if(!digitalRead(m_sense))
+            {
+                m_value = usec2mm(m_state_time, m_now);
+                changeState(SENSOR_STATE_T0);
+            }
+            else if(longDiff(m_start, m_now) > 21000)
+                timeout();
+            break;
+        default:
+            timeout();
+            break;
+    }
 }
 
 

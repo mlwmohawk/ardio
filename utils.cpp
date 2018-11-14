@@ -24,104 +24,104 @@
 
 void setPwmFrequency (int pin, int divisor)
 {
-	byte mode;
-	if (pin == 5 || pin == 6 || pin == 9 || pin == 10)
-	{
-		switch (divisor)
-		{
-		case 1:
-			mode = 0x01;
-			break;
-		case 8:
-			mode = 0x02;
-			break;
-		case 64:
-			mode = 0x03;
-			break;
-		case 256:
-			mode = 0x04;
-			break;
-		case 1024:
-			mode = 0x05;
-			break;
-		default:
-			return;
-		}
-		if (pin == 5 || pin == 6)
-		{
-			TCCR0B = (TCCR0B & 0b11111000) | mode;
-		}
-		else
-		{
-			TCCR1B = (TCCR1B & 0b11111000) | mode;
-		}
-	}
-	else if (pin == 3 || pin == 11)
-	{
-		switch (divisor)
-		{
-		case 1:
-			mode = 0x01;
-			break;
-		case 8:
-			mode = 0x02;
-			break;
-		case 32:
-			mode = 0x03;
-			break;
-		case 64:
-			mode = 0x04;
-			break;
-		case 128:
-			mode = 0x05;
-			break;
-		case 256:
-			mode = 0x06;
-			break;
-		case 1024:
-			mode = 0x7;
-			break;
-		default:
-			return;
-		}
-		TCCR2B = (TCCR2B & 0b11111000) | mode;
-	}
+    byte mode;
+    if (pin == 5 || pin == 6 || pin == 9 || pin == 10)
+    {
+        switch (divisor)
+        {
+        case 1:
+            mode = 0x01;
+            break;
+        case 8:
+            mode = 0x02;
+            break;
+        case 64:
+            mode = 0x03;
+            break;
+        case 256:
+            mode = 0x04;
+            break;
+        case 1024:
+            mode = 0x05;
+            break;
+        default:
+            return;
+        }
+        if (pin == 5 || pin == 6)
+        {
+            TCCR0B = (TCCR0B & 0b11111000) | mode;
+        }
+        else
+        {
+            TCCR1B = (TCCR1B & 0b11111000) | mode;
+        }
+    }
+    else if (pin == 3 || pin == 11)
+    {
+        switch (divisor)
+        {
+        case 1:
+            mode = 0x01;
+            break;
+        case 8:
+            mode = 0x02;
+            break;
+        case 32:
+            mode = 0x03;
+            break;
+        case 64:
+            mode = 0x04;
+            break;
+        case 128:
+            mode = 0x05;
+            break;
+        case 256:
+            mode = 0x06;
+            break;
+        case 1024:
+            mode = 0x7;
+            break;
+        default:
+            return;
+        }
+        TCCR2B = (TCCR2B & 0b11111000) | mode;
+    }
 }
 
 unsigned long longDiff(unsigned long start, unsigned long finish)
 {
-	if(finish < start)
-		return start + (0-finish);
-	else
-		return finish - start;
+    if(finish < start)
+        return start + (0-finish);
+    else
+        return finish - start;
 }
 
 unsigned long microDiff(unsigned long *lastTime)
 {
-	unsigned long t;
-	unsigned long before = *lastTime;
-	unsigned long now = *lastTime = micros();
-	if (before > now) // Clock wrapped
-		t = now + (0 - before);
-	else
-		t = (before == 0) ? 0 : now - before;
-	return t;
+    unsigned long t;
+    unsigned long before = *lastTime;
+    unsigned long now = *lastTime = micros();
+    if (before > now) // Clock wrapped
+        t = now + (0 - before);
+    else
+        t = (before == 0) ? 0 : now - before;
+    return t;
 }
 
 
 unsigned long milliDiff( unsigned long *lastTime)
 {
-	unsigned long t;
-	unsigned long before = *lastTime;
-	unsigned long now = *lastTime = millis();
-	if (before > now) // Clock wrapped
-		t = now + (0 - before);
-	else
-		t = (before == 0) ? 0 : now - before;
-	return t;
+    unsigned long t;
+    unsigned long before = *lastTime;
+    unsigned long now = *lastTime = millis();
+    if (before > now) // Clock wrapped
+        t = now + (0 - before);
+    else
+        t = (before == 0) ? 0 : now - before;
+    return t;
 }
 
 unsigned long difftime(unsigned long tmprev, unsigned long tmnow)
 {
-	return (tmprev < tmnow) ?  tmnow - tmprev : (ULONG_MAX - tmprev) + tmnow;
+    return (tmprev < tmnow) ?  tmnow - tmprev : (ULONG_MAX - tmprev) + tmnow;
 }

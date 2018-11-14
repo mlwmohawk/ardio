@@ -37,7 +37,7 @@ void yield()
     for(int i=0; tasks[i] != NULL; i++)
     {
         int oldstate = tasks[i]->getstate();
-        if(oldstate & TASK_RUNABLE == TASK_RUNABLE)
+        if((oldstate & TASK_RUNABLE) == TASK_RUNABLE)
         {
             tasks[i]->setstate(TASK_BUSY);
             tasks[i]->loop();

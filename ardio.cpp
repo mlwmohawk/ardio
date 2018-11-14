@@ -77,7 +77,6 @@ static unsigned long handle_pin_mode(char * buffer)
 // Format :V0=ref
 static unsigned long handle_reference_voltage(char * buffer)
 {
-    int pin = getpin(buffer);
     int value = getvalue(buffer);
     int ref = DEFAULT;
     switch (value)

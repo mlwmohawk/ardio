@@ -23,33 +23,33 @@
 #ifndef _ULTRASONIC_H_
 #define _ULTRASONIC_H_
 
-#define SENSOR_STATE_T0	0	// Device is idle
-#define SENSOR_STATE_T1	1	// Device is in initiate pulse state
-#define SENSOR_STATE_T2	2	// device is in WAIT state
-#define SENSOR_STATE_T3	3	// device is in time state
-#define SENSOR_STATE_T4	4	// device is in time state
+#define SENSOR_STATE_T0 0   // Device is idle
+#define SENSOR_STATE_T1 1   // Device is in initiate pulse state
+#define SENSOR_STATE_T2 2   // device is in WAIT state
+#define SENSOR_STATE_T3 3   // device is in time state
+#define SENSOR_STATE_T4 4   // device is in time state
 
 class UltrasonicSensor : public ardio_task
 {
-	unsigned long 	m_now;
-	unsigned long	m_start;
-	unsigned long 	m_state_time;
-	unsigned long 	m_prev_state_time;
+    unsigned long   m_now;
+    unsigned long   m_start;
+    unsigned long   m_state_time;
+    unsigned long   m_prev_state_time;
     unsigned long   m_state;
     unsigned long   m_value;
 
-	int	m_trigger;
+    int m_trigger;
     int m_sense;
 
-	void changeState(int state);
-	void timeout();
-	public:
-	UltrasonicSensor(int trigger);
-	UltrasonicSensor(int trigger, int sense);
-	~UltrasonicSensor();
+    void changeState(int state);
+    void timeout();
+    public:
+    UltrasonicSensor(int trigger);
+    UltrasonicSensor(int trigger, int sense);
+    ~UltrasonicSensor();
 
-	void setup();
-	void loop();
+    void setup();
+    void loop();
     unsigned long getvalue(void);
 };
 
