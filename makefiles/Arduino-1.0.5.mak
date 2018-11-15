@@ -17,10 +17,13 @@
 # 
 #    If you want support or to commercially license this library, the author
 #    can be reached at markw@mohawksoft.com
+
+ARDUINO_BUILD=105
 ARDUINO = $(INSTALL_DIR)/hardware/arduino/cores/arduino
 VARIANTS = $(INSTALL_DIR)/hardware/arduino/variants/standard
 ARDUINO_LIB = $(INSTALL_DIR)/libraries
 AVRDUDE_PATH = $(INSTALL_DIR)/hardware/tools
+
 
 C_MODULES =  \
 srcdir/wiring_pulse.c \
@@ -43,5 +46,4 @@ srcdir/USBCore.cpp \
 srcdir/WMath.cpp \
 srcdir/WString.cpp \
 srcdir/main.cpp \
-#$(ARDUINO_LIB)/EEPROM/EEPROM.cpp \
 

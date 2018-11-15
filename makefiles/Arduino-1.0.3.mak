@@ -18,6 +18,7 @@
 #    If you want support or to commercially license this library, the author
 #    can be reached at markw@mohawksoft.com
 
+ARDUINO_BUILD=103
 ARDUINO = $(INSTALL_DIR)/hardware/arduino/cores/arduino
 VARIANTS = $(INSTALL_DIR)/hardware/arduino/variants/standard
 ARDUINO_LIB = $(INSTALL_DIR)/libraries

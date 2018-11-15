@@ -85,9 +85,9 @@ void UltrasonicSensor::changeState(int state)
     m_state = state;
 }
 
-void UltrasonicSensor::timeout()
+void UltrasonicSensor::timeout(unsigned long tmout)
 {
-    m_value = 20000;
+    m_value = tmout;
     changeState(SENSOR_STATE_T0);
 }
 
@@ -98,14 +98,19 @@ unsigned long UltrasonicSensor::getvalue(void)
 
 /*
  * This comprises the "state machine" for the sensor.
- * After a ping is sent, this will step through the
+ * After a trigger is sent, this will step through the
  * states until complete.
- * T0   T1     T2   T3    T4              complete (back to T0)
- * v    v      v    v     v                 v
- *      --------          -------------------
- * _____|      |__________|                 |_____
+ * T0   T1      T2          T3        T4   complete (back to T0)
+ * v    v       v           v         v    v
+ *       -------             ---------
+ * _____|       |_____|||||||         |_____
  *
- * idle | ping |  settle  |  wait for echo  | idle
+ * idle |trigger|settle/ping|wait echo| idle
+ * 
+ * T1 to T2 should be greater than 5us
+ * T2 to T3 varies depending on sensor used
+ * T3 to T4 is the round trip time of the sound wave
+ * 
  * 
  */ 
 void UltrasonicSensor::loop()
@@ -133,14 +138,14 @@ void UltrasonicSensor::loop()
             }
             break;
         case SENSOR_STATE_T2:       // Wait for sensor to settle
-            if(longDiff(m_state_time, m_now) > 150)
+            if(longDiff(m_state_time, m_now) > 100)
                 changeState(SENSOR_STATE_T3);
 
         case SENSOR_STATE_T3:       // Waiting for rise on leading edge
             if(digitalRead(m_sense))
                 changeState(SENSOR_STATE_T4);
-            else if(longDiff(m_start, m_now) > 500)
-                timeout();
+            else if(longDiff(m_start, m_now) > 1000)
+                timeout(20001);
             break;
         case SENSOR_STATE_T4:       // Waiting for dropping edge of signal
             if(!digitalRead(m_sense))
@@ -149,10 +154,10 @@ void UltrasonicSensor::loop()
                 changeState(SENSOR_STATE_T0);
             }
             else if(longDiff(m_start, m_now) > 21000)
-                timeout();
+                timeout(21000);
             break;
         default:
-            timeout();
+            timeout(21002);
             break;
     }
 }

@@ -30,10 +30,14 @@ PMCU=ATMEGA328P
 F_CPU = 16000000
 PROJECT=ardio
 C_SRC=
-CXX_SRC=ardio.cpp ardtask.cpp ardserial.cpp ultrasonic.cpp utils.cpp config.cpp
+CXX_SRC=ardio.cpp ardtask.cpp ardserial.cpp ultrasonic.cpp utils.cpp config.cpp 
 SUBDIRS = examples
 EXTRA_TARGETS = subdirs
 EXTRA_SRC = 
+
+ifdef ONEWIRE
+CXX_SRC+=../OneWire-2.3.4/OneWire.cpp
+endif
 
 include makefiles/Arduino.mak
 

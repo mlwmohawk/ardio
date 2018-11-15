@@ -19,6 +19,7 @@
 #    can be reached at markw@mohawksoft.com
 
 
+ARDUINO_BUILD=184
 ARDUINO = $(INSTALL_DIR)/hardware/arduino/avr/cores/arduino
 VARIANTS = $(INSTALL_DIR)/hardware/arduino/avr/variants/standard
 ARDUINO_LIB = $(INSTALL_DIR)/hardware/arduino/avr/libraries

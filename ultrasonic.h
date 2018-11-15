@@ -42,7 +42,7 @@ class UltrasonicSensor : public ardio_task
     int m_sense;
 
     void changeState(int state);
-    void timeout();
+    void timeout(unsigned long tmout);
     public:
     UltrasonicSensor(int trigger);
     UltrasonicSensor(int trigger, int sense);

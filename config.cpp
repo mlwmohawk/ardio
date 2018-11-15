@@ -24,20 +24,24 @@
 #include "ardio.h"
 #include "ultrasonic.h"
 
+
+/*
+ * This module is where you construct your image. Think of ardio as a toolkit for
+ * building your project. As a baseline, it functions like a simple I/O board
+ * but you can add functionality as either tasks or functions or a combination
+ * of both.
+ * Define "ENABLE_ULTRA" will expose the ultrasonic ranging code as a ":U" function.
+ */
+
 #define ENABLE_ULTRA
 
 ardio_serial serial;
 
 #ifdef ENABLE_ULTRA
-UltrasonicSensor us0(20);
-UltrasonicSensor us1(21);
-
+UltrasonicSensor us0(7);
 unsigned long readultra(char *buffer)
 {
-    if(*buffer == '0')
-        return us0.getvalue();
-    else
-        return us1.getvalue();
+    return us0.getvalue();
 }
 #endif
 
@@ -51,7 +55,7 @@ unsigned long readmicros(char *buffer)
 }
 
 command extra_commands[]={
-    {'M',"millis",readmillis},
+    {'M',"millis",readmillis},  // Example of adding your own command.
     {'m',"micros",readmicros},
 #ifdef ENABLE_ULTRA
     {'U',"ultrasonic",readultra},
@@ -63,7 +67,6 @@ ardio_task *tasks[]={
     &serial,
 #ifdef ENABLE_ULTRA
     &us0,
-    &us1,
 #endif
     NULL
 };

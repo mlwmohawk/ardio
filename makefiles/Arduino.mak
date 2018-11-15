@@ -22,7 +22,7 @@
 # Basic directory structure
 #
 INSTALL_DIR = /opt/arduino/arduino-$(ARDUINO_VER)
-include makefiles/Arduino-$(ARDUINO_VER).mak	
+include makefiles/Arduino-$(ARDUINO_VER).mak    
 
 #
 # Substitute module sources and dependencies
@@ -47,7 +47,7 @@ LST = $(ASRC:.S=.lst) $(CXXSRC:.cpp=.lst) $(SRC:.c=.lst)
 
 # Build flags
 FORMAT = ihex
-CDEFS = -DF_CPU=$(F_CPU)L -DARDUINO=$(ARDUINO_VER)
+CDEFS = -DF_CPU=$(F_CPU)L -DARDUINO=$(ARDUINO_BUILD)
 CINCS = -I$(ARDUINO)  -I$(VARIANTS) -I$(ARDUINO_LIB)
 COPT = -Os
 CDEBUG = -g$(DEBUG)
@@ -112,7 +112,7 @@ upload: $(OBJDIR)/$(PROJECT).hex
 
 .elf.eep:
 	$(OBJCOPY) -O $(FORMAT) -j .eeprom --set-section-flags=.eeprom="alloc,load" \
-	--no-change-warnings --change-section-lma .eeprom=0 $< $@
+    --no-change-warnings --change-section-lma .eeprom=0 $< $@
 
 # Create extended listing file from ELF output file.
 .elf.lss:
@@ -145,11 +145,11 @@ $(OBJDIR)/%.o : $(ARDUINO)/%.cpp
 clean: clean_extra
 	rm -f  $(OBJDIR)/$(PROJECT).hex $(OBJDIR)/$(PROJECT).eep $(OBJDIR)/$(PROJECT).cof $(OBJDIR)/$(PROJECT).elf \
 	$(OBJDIR)/$(PROJECT).map $(OBJDIR)/$(PROJECT).sym $(OBJDIR)/$(PROJECT).lss $(OBJDIR)/core.a \
-    $(OBJ) $(OBJ_MODULES)
+	$(OBJ) $(OBJ_MODULES)
 
 allclean:
 	rm -f  $(OBJDIR)/$(PROJECT).hex $(OBJDIR)/$(PROJECT).eep $(OBJDIR)/$(PROJECT).cof $(OBJDIR)/$(PROJECT).elf \
-	$(OBJDIR)/$(PROJECT).map $(OBJDIR)/$(PROJECT).sym $(OBJDIR)/$(PROJECT).lss $(OBJDIR)/core.a \
-	$(OBJ) $(LST) $(SRC:.c=.s) $(SRC:.c=.d) $(CXXSRC:.cpp=.s) $(CXXSRC:.cpp=.d)
+    $(OBJDIR)/$(PROJECT).map $(OBJDIR)/$(PROJECT).sym $(OBJDIR)/$(PROJECT).lss $(OBJDIR)/core.a \
+    $(OBJ) $(LST) $(SRC:.c=.s) $(SRC:.c=.d) $(CXXSRC:.cpp=.s) $(CXXSRC:.cpp=.d)
 
-.PHONY:	all build elf hex eep lss sym program coff extcoff clean clean_extra subdirs
+.PHONY: all build elf hex eep lss sym program coff extcoff clean clean_extra subdirs
