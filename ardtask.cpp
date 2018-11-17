@@ -26,33 +26,59 @@
 
 ardio_task::ardio_task()
 {
-    m_task_state = TASK_RUNABLE;
+    m_task_state = TASK_LOOPABLE | TASK_YIELDABLE;
 }
 ardio_task::~ardio_task()
 {
 }
 
-void yield()
-{
-    for(int i=0; tasks[i] != NULL; i++)
-    {
-        int oldstate = tasks[i]->getstate();
-        if((oldstate & TASK_RUNABLE) == TASK_RUNABLE)
-        {
-            tasks[i]->setstate(TASK_BUSY);
-            tasks[i]->loop();
-            tasks[i]->setstate(oldstate);
-        }
-    }
-}
 
+void scheduler(int type)
+{
+	// When we yield, only run one task and pick up where we left off
+	if(type == SCHED_YIELD)
+	{
+		static int i=0;
+		while(tasks[i] != NULL)
+		{
+			int oldstate = tasks[i]->getstate();
+			if((oldstate & TASK_YIELDABLE) == TASK_YIELDABLE)
+			{
+				tasks[i]->setstate(TASK_BUSY);
+				tasks[i]->loop(type);
+				tasks[i]->setstate(oldstate);
+				return;
+			}
+			i++;
+		}
+		i=0;
+	}
+	else // In "loop" run all tasks
+	{
+		for(int i=0; tasks[i] != NULL; i++)
+		{
+			int oldstate = tasks[i]->getstate();
+			if((oldstate & TASK_LOOPABLE) == TASK_LOOPABLE)
+			{
+				tasks[i]->setstate(TASK_BUSY);
+				tasks[i]->loop(type);
+				tasks[i]->setstate(oldstate);
+			}
+		}
+	}
+}
 void setup()
 {
     for(int i=0; tasks[i] != NULL; i++)
         tasks[i]->setup();
 }
 
+void yield(int type)
+{
+	scheduler(SCHED_YIELD);
+}
+
 void loop ()
 {
-    yield();
+	scheduler(SCHED_LOOP);
 }

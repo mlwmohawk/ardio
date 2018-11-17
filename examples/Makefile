@@ -18,13 +18,16 @@
 #    If you want support or to commercially license this library, the author
 #    can be reached at markw@mohawksoft.com
 
-TARGETS=unittest
+TARGETS=unittest ranger
 all: $(TARGETS)
 
 CARGS=-g -O0 -Wall -I.. -DLIBARDIO_FUNCTS 
 LOBJS=libardio.o
 
 unittest : unittest.c ../libardio.h $(LOBJS)
+	gcc $(CARGS) -o $@ $< $(LOBJS)
+
+ranger : ranger.c
 	gcc $(CARGS) -o $@ $< $(LOBJS)
 
 libardio.o : libardio.c ../libardio.h

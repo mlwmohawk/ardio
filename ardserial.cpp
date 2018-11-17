@@ -44,7 +44,7 @@ void ardio_serial::setup()
     Serial.print(">\n");
 }
 
-void ardio_serial::loop()
+void ardio_serial::loop(int type)
 {
     if(Serial.available())
     {

@@ -113,7 +113,7 @@ unsigned long UltrasonicSensor::getvalue(void)
  * 
  * 
  */ 
-void UltrasonicSensor::loop()
+void UltrasonicSensor::loop(int type)
 {
     m_now = micros();
 
@@ -144,18 +144,23 @@ void UltrasonicSensor::loop()
         case SENSOR_STATE_T3:       // Waiting for rise on leading edge
             if(digitalRead(m_sense))
                 changeState(SENSOR_STATE_T4);
-            else if(longDiff(m_start, m_now) > 1000)
+            else if(longDiff(m_start, m_now) > 600)
                 timeout(20001);
             break;
         case SENSOR_STATE_T4:       // Waiting for dropping edge of signal
             if(!digitalRead(m_sense))
             {
                 m_value = usec2mm(m_state_time, m_now);
-                changeState(SENSOR_STATE_T0);
+                changeState(SENSOR_STATE_T5);
             }
             else if(longDiff(m_start, m_now) > 21000)
                 timeout(21000);
             break;
+		case SENSOR_STATE_T5: // Wait for all echos to die out and void false triggers
+			if(longDiff(m_start, m_now) > 30000)
+				changeState(SENSOR_STATE_T0);
+			break;
+			
         default:
             timeout(21002);
             break;

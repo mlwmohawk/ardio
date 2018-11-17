@@ -27,7 +27,8 @@
 #define SENSOR_STATE_T1 1   // Device is in initiate pulse state
 #define SENSOR_STATE_T2 2   // device is in WAIT state
 #define SENSOR_STATE_T3 3   // device is in time state
-#define SENSOR_STATE_T4 4   // device is in time state
+#define SENSOR_STATE_T4 4   // device is in complete state
+#define SENSOR_STATE_T5 5   // device is in idle state
 
 class UltrasonicSensor : public ardio_task
 {
@@ -49,7 +50,7 @@ class UltrasonicSensor : public ardio_task
     ~UltrasonicSensor();
 
     void setup();
-    void loop();
+    void loop(int type);
     unsigned long getvalue(void);
 };
 

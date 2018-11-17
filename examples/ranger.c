@@ -19,59 +19,48 @@
     If you want support or to commercially license this library, the author
     can be reached at markw@mohawksoft.com
 */ 
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <termio.h>
+#include <fcntl.h>
+#include <time.h>
+#include <sys/select.h>
+#include <string.h>
+#include <math.h>
+#include <getopt.h>
+#include <errno.h>
 
+#include "libardio.h"
 
-#define ARDIO_MAJOR 0
-#define ARDIO_MINOR 1
-
-// Task states
-enum task_states
+int main(int argc, char **argv)
 {
-    TASK_IDLE=0x0,
-    TASK_LOOPABLE=0x1,
-    TASK_YIELDABLE=0x2,
-    TASK_BUSY=0x4
-};
+    char *device = "/dev/ttyACM0";
+    int opt;
 
-#define SCHED_LOOP  0
-#define SCHED_YIELD 1
+    while( (opt = getopt(argc, argv, "s:d:")) != -1)
+    {
+        switch(opt)
+        {
+            case 'd':
+                device = optarg;
+                printf("using device: %s\n", optarg);
+                break;
+        }
+    }
+    int fd = ardioOpen(device);
 
-class ardio_task
-{
-    protected:
-    int m_task_state;
+    if(fd < 0)
+    {
+        perror("Can not open device");
+        exit(-1);
+    }
 
-    public:
-    ardio_task();
-    ~ardio_task();
-    int getstate() { return m_task_state; }
-    void setstate(int state) { m_task_state = state;}
+	while( 1 )
+	{
+        printf("%dmm \n", ardioRead(fd, 'U', 0));
+		usleep(100000);		
+	}
 
-    virtual void setup()=0;
-    virtual void loop(int type)=0;
-};
-
-
-typedef unsigned long (*cmdfunc)(char *buffer);
-struct command
-{
-    char chop;
-    const char *name;
-    cmdfunc func;
-};
-
-
-// Standard classes
-class ardio_serial : public ardio_task
-{
-    protected:
-    static int readchar(void); 
-    public:
-    void setup();
-    void loop(int type);
-};
-
-extern ardio_task * tasks[];
-extern command extra_commands[];
-extern char do_echo;
-extern unsigned long handle_cmd(char *buffer);
+    ardioClose(fd);
+}
