@@ -22,8 +22,6 @@
 #include <Arduino.h>
 #include "libardio.h"
 #include "ardio.h"
-#include "ultrasonic.h"
-
 
 /*
  * This module is where you construct your image. Think of ardio as a toolkit for
@@ -34,15 +32,28 @@
  */
 
 #define ENABLE_ULTRA
+#define ENABLE_DS18B20
 
 ardio_serial serial;
 
 #ifdef ENABLE_ULTRA
+#include "ultrasonic.h"
 UltrasonicSensor us0(7);
 unsigned long readultra(char *buffer)
 {
     return us0.getvalue();
 }
+#endif
+
+#ifdef ENABLE_DS18B20
+#include "DS18B20.h"
+DS18B20 ds18b20;
+
+unsigned long readtemp(char *buffer)
+{
+	return ds18b20.getvalue(0);
+}
+
 #endif
 
 unsigned long readmillis(char *buffer)
@@ -59,6 +70,9 @@ command extra_commands[]={
     {'m',"micros",readmicros},
 #ifdef ENABLE_ULTRA
     {'U',"ultrasonic",readultra},
+#endif
+#ifdef ENABLE_DS18B20
+	{'T',"readtemp",readtemp},
 #endif
     {0,NULL,NULL}
 };

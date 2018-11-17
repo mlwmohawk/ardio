@@ -19,48 +19,17 @@
     If you want support or to commercially license this library, the author
     can be reached at markw@mohawksoft.com
 */ 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <termio.h>
-#include <fcntl.h>
-#include <time.h>
-#include <sys/select.h>
-#include <string.h>
-#include <math.h>
-#include <getopt.h>
-#include <errno.h>
 
-#include "libardio.h"
+#ifndef _DS18B20_H_
+#define _DS18B20_H_
 
-int main(int argc, char **argv)
+
+class DS18B20 : public ardio_task
 {
-    char *device = "/dev/ttyACM0";
-    int opt;
+    public:
+    void setup();
+    unsigned long getvalue(int device);
+	unsigned long trigger();
+};
 
-    while( (opt = getopt(argc, argv, "s:d:")) != -1)
-    {
-        switch(opt)
-        {
-            case 'd':
-                device = optarg;
-                printf("using device: %s\n", optarg);
-                break;
-        }
-    }
-    int fd = ardioOpen(device);
-
-    if(fd < 0)
-    {
-        perror("Can not open device");
-        exit(-1);
-    }
-
-	while( 1 )
-	{
-        printf("%dmm            \r", ardioRead(fd, 'U', 0));
-		usleep(10000);
-	}
-
-    ardioClose(fd);
-}
+#endif

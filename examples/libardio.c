@@ -224,6 +224,7 @@ int readresp (int fd, char *buffer, int max)
     if(ardio_debug > 1)
     {
         printf("count=%d\n", count);
+		printf("retries=%d\n",retries);
         printf("[[%s]]\n", p);
     }
     return count;

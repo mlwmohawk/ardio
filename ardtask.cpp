@@ -31,6 +31,12 @@ ardio_task::ardio_task()
 ardio_task::~ardio_task()
 {
 }
+void ardio_task::setup()
+{
+}
+void ardio_task::loop(int type)
+{
+}
 
 
 void scheduler(int type)

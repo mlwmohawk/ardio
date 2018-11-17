@@ -18,6 +18,10 @@
 #    If you want support or to commercially license this library, the author
 #    can be reached at markw@mohawksoft.com
 
+# Uncomment to use DS18B20 thermometer
+#ONEWIRE=1
+#DS18B20=1
+
 ifndef ARDUINO_VER
 ARDUINO_VER=1.8.7
 endif
@@ -37,7 +41,13 @@ EXTRA_SRC =
 
 ifdef ONEWIRE
 CXX_SRC+=../OneWire-2.3.4/OneWire.cpp
+ifdef DS18B20
+CXX_SRC+=../Arduino-Temperature-Control-Library/DallasTemperature.cpp
+CINCS_PROJ=-I../OneWire-2.3.4 -I../Arduino-Temperature-Control-Library
+CXX_SRC+=DS18B20.cpp
 endif
+endif
+
 
 include makefiles/Arduino.mak
 

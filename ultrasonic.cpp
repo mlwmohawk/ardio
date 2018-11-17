@@ -100,7 +100,7 @@ unsigned long UltrasonicSensor::getvalue(void)
  * This comprises the "state machine" for the sensor.
  * After a trigger is sent, this will step through the
  * states until complete.
- * T0   T1      T2          T3        T4   complete (back to T0)
+ * T0   T1      T2          T3        T4   T5 (back to T0)
  * v    v       v           v         v    v
  *       -------             ---------
  * _____|       |_____|||||||         |_____
@@ -110,6 +110,7 @@ unsigned long UltrasonicSensor::getvalue(void)
  * T1 to T2 should be greater than 5us
  * T2 to T3 varies depending on sensor used
  * T3 to T4 is the round trip time of the sound wave
+ * T4 to T5 is a wait time between samples
  * 
  * 
  */ 

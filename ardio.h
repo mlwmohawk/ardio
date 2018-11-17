@@ -47,8 +47,8 @@ class ardio_task
     int getstate() { return m_task_state; }
     void setstate(int state) { m_task_state = state;}
 
-    virtual void setup()=0;
-    virtual void loop(int type)=0;
+    virtual void setup();
+    virtual void loop(int type);
 };
 
 

@@ -30,7 +30,7 @@ extern "C" {
 #define CMDBUF_SIZE 16
 #define SELECT_USEC 10000
 #define SERIAL_BAUD 38400
-#define READ_RETRY  5
+#define READ_RETRY  50
 
 // You must define ' LIBARDIO_FUNCTS' to get function declarations.
 // They break arduino builds.

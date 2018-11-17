@@ -58,8 +58,13 @@ int main(int argc, char **argv)
 
 	while( 1 )
 	{
-        printf("%dmm            \r", ardioRead(fd, 'U', 0));
-		usleep(10000);
+		double temp = (double) ardioRead(fd, 'T', 0);
+		temp = temp * 0.0078125; // Convert from raw to C
+
+		double f = ((temp*9)/5) + 32;
+
+        printf("%0.1f (%0.1f)\n", temp, f);
+		usleep(100000);
 	}
 
     ardioClose(fd);

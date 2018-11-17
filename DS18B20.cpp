@@ -17,50 +17,34 @@
     MA 02111-1307, USA
  
     If you want support or to commercially license this library, the author
-    can be reached at markw@mohawksoft.com
-*/ 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <termio.h>
-#include <fcntl.h>
-#include <time.h>
-#include <sys/select.h>
-#include <string.h>
-#include <math.h>
-#include <getopt.h>
-#include <errno.h>
+*/
 
-#include "libardio.h"
+#include "Arduino.h"
+#include "ardio.h"
+#include "DS18B20.h"
 
-int main(int argc, char **argv)
+#include <OneWire.h> 
+#include <DallasTemperature.h>
+#define ONE_WIRE_BUS 2
+
+OneWire oneWire(ONE_WIRE_BUS); 
+DallasTemperature sensors(&oneWire);
+
+void DS18B20::setup()
 {
-    char *device = "/dev/ttyACM0";
-    int opt;
+	m_task_state = TASK_IDLE; // Don't run 
+	sensors.begin(); 
+}
 
-    while( (opt = getopt(argc, argv, "s:d:")) != -1)
-    {
-        switch(opt)
-        {
-            case 'd':
-                device = optarg;
-                printf("using device: %s\n", optarg);
-                break;
-        }
-    }
-    int fd = ardioOpen(device);
-
-    if(fd < 0)
-    {
-        perror("Can not open device");
-        exit(-1);
-    }
-
-	while( 1 )
+unsigned long DS18B20::getvalue(int device)
+{
+	DeviceAddress deviceAddress;
+	sensors.requestTemperatures();
+	if (!sensors.getAddress(deviceAddress, device)) 
 	{
-        printf("%dmm            \r", ardioRead(fd, 'U', 0));
-		usleep(10000);
+		return 0;
 	}
 
-    ardioClose(fd);
+	float temp = sensors.getTemp((uint8_t*) deviceAddress);
+	return (unsigned long) temp;
 }

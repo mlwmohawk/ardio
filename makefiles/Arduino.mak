@@ -48,7 +48,7 @@ LST = $(ASRC:.S=.lst) $(CXXSRC:.cpp=.lst) $(SRC:.c=.lst)
 # Build flags
 FORMAT = ihex
 CDEFS = -DF_CPU=$(F_CPU)L -DARDUINO=$(ARDUINO_BUILD)
-CINCS = -I$(ARDUINO)  -I$(VARIANTS) -I$(ARDUINO_LIB)
+CINCS = -I$(ARDUINO)  -I$(VARIANTS) -I$(ARDUINO_LIB) $(CINCS_PROJ)
 COPT = -Os
 CDEBUG = -g$(DEBUG)
 CWARN = -Wall
