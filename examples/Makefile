@@ -25,13 +25,13 @@ LOBJS=libardio.o
 
 all: $(LOBJS) $(TARGETS)
 
-unittest : unittest.c
+unittest : unittest.c $(LOBJS)
 	gcc $(CARGS) -o $@ $< $(LOBJS)
 
-ranger : ranger.c
+ranger : ranger.c $(LOBJS)
 	gcc $(CARGS) -o $@ $< $(LOBJS)
 
-readtemp : readtemp.c
+readtemp : readtemp.c $(LOBJS)
 	gcc $(CARGS) -o $@ $< $(LOBJS)
 
 libardio.o : libardio.c ../libardio.h

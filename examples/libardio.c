@@ -39,7 +39,7 @@ int ardio_debug=0;
 static int last_fd = -1;
 
 // Configure serial properties on a file descriptor
-static void setparms (int f, int newbaud, char *par, char *bits)
+static void setparms (int f, int newbaud, const char *par, const char *bits)
 {
     int spd = -1;
     int bit = bits[0];

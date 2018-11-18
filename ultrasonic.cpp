@@ -37,6 +37,10 @@
 #include "utils.h"
 #include "ultrasonic.h"
 
+#ifndef ENABLE_ULTRA
+#error "ENABLE_ULTRA not define"
+#endif
+
 UltrasonicSensor::UltrasonicSensor(int trigger)
 {
     m_start=0;

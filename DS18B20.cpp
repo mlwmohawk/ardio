@@ -23,6 +23,11 @@
 #include "ardio.h"
 #include "DS18B20.h"
 
+#ifndef ENABLE_DS18B20 
+#error "ENABLE_DS18B20 not defined"
+#endif
+
+
 #include <OneWire.h> 
 #include <DallasTemperature.h>
 #define ONE_WIRE_BUS 2

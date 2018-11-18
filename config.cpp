@@ -31,8 +31,8 @@
  * Define "ENABLE_ULTRA" will expose the ultrasonic ranging code as a ":U" function.
  */
 
-#define ENABLE_ULTRA
-#define ENABLE_DS18B20
+// #define ENABLE_ULTRA
+// #define ENABLE_DS18B20
 
 ardio_serial serial;
 

@@ -18,9 +18,11 @@
 #    If you want support or to commercially license this library, the author
 #    can be reached at markw@mohawksoft.com
 
+# Uncomment to enable ultrasonic sensor
+ULTRASONIC=1
 # Uncomment to use DS18B20 thermometer
-#ONEWIRE=1
-#DS18B20=1
+ONEWIRE=1
+DS18B20=1
 
 ifndef ARDUINO_VER
 ARDUINO_VER=1.8.7
@@ -34,16 +36,21 @@ PMCU=ATMEGA328P
 F_CPU = 16000000
 PROJECT=ardio
 C_SRC=
-CXX_SRC=ardio.cpp ardtask.cpp ardserial.cpp ultrasonic.cpp utils.cpp config.cpp 
+CXX_SRC=ardio.cpp ardtask.cpp ardserial.cpp utils.cpp config.cpp 
 SUBDIRS = examples
 EXTRA_TARGETS = subdirs
 EXTRA_SRC = 
+
+ifdef ULTRASONIC
+CXX_SRC+=ultrasonic.cpp
+CDEFS_PROJ+=-DENABLE_ULTRA
+endif
 
 ifdef ONEWIRE
 CXX_SRC+=../OneWire-2.3.4/OneWire.cpp
 ifdef DS18B20
 CXX_SRC+=../Arduino-Temperature-Control-Library/DallasTemperature.cpp
-CINCS_PROJ=-I../OneWire-2.3.4 -I../Arduino-Temperature-Control-Library
+CDEFS_PROJ+=-DENABLE_DS18B20 -I../OneWire-2.3.4 -I../Arduino-Temperature-Control-Library 
 CXX_SRC+=DS18B20.cpp
 endif
 endif
