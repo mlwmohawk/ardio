@@ -38,7 +38,6 @@ void ardio_task::loop(int type)
 {
 }
 
-
 void scheduler(int type)
 {
 	// When we yield, only run one task and pick up where we left off
@@ -52,7 +51,8 @@ void scheduler(int type)
 			{
 				tasks[i]->setstate(TASK_BUSY);
 				tasks[i]->loop(type);
-				tasks[i]->setstate(oldstate);
+				if(tasks[i]->getstate() == TASK_BUSY)
+					tasks[i]->setstate(oldstate);
 				return;
 			}
 			i++;
@@ -68,7 +68,8 @@ void scheduler(int type)
 			{
 				tasks[i]->setstate(TASK_BUSY);
 				tasks[i]->loop(type);
-				tasks[i]->setstate(oldstate);
+				if(tasks[i]->getstate() == TASK_BUSY)
+					tasks[i]->setstate(oldstate);
 			}
 		}
 	}

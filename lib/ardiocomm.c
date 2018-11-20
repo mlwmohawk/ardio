@@ -35,8 +35,8 @@
 
 int ardio_debug=0;
 
-// Ugly static variable, last opened arduino
-static int last_fd = -1;
+// Ugly global variable, last opened arduino
+int last_fd = -1;
 
 // Configure serial properties on a file descriptor
 static void setparms (int f, int newbaud, const char *par, const char *bits)
@@ -335,34 +335,3 @@ int ardioWrite (int fd, char cmd, int pin, int value)
         return atoi (&resp[1]);
 }
 
-// Emulate Arduino calls with last_fd
-
-int digitalRead (int pin)
-{
-    return ardioRead (last_fd, 'D', pin);
-}
-
-int digitalWrite (int pin, int value)
-{
-    return ardioWrite (last_fd, 'D', pin, value);
-}
-
-int analogRead (int pin)
-{
-    return ardioRead (last_fd, 'A', pin);
-}
-
-int analogWrite (int pin, int value)
-{
-    return ardioWrite (last_fd, 'A', pin, value);
-}
-
-int pinMode (int pin, int mode)
-{
-    return ardioWrite (last_fd, 'P', pin, mode);
-}
-
-int analogReference (int type)
-{
-    return ardioWrite (last_fd, 'V', 0, type);
-}

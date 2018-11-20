@@ -36,13 +36,14 @@ PMCU=ATMEGA328P
 F_CPU = 16000000
 PROJECT=ardio
 C_SRC=
-CXX_SRC=ardio.cpp ardtask.cpp ardserial.cpp utils.cpp config.cpp 
-SUBDIRS = examples
+CXX_SRC=arduino/ardio.cpp arduino/ardtask.cpp arduino/ardserial.cpp arduino/utils.cpp arduino/config.cpp 
+SUBDIRS = lib examples
 EXTRA_TARGETS = subdirs
 EXTRA_SRC = 
+CDEFS_PROJ=-Ilib
 
 ifdef ULTRASONIC
-CXX_SRC+=ultrasonic.cpp
+CXX_SRC+=arduino/ultrasonic.cpp
 CDEFS_PROJ+=-DENABLE_ULTRA
 endif
 
@@ -51,7 +52,7 @@ CXX_SRC+=../OneWire-2.3.4/OneWire.cpp
 ifdef DS18B20
 CXX_SRC+=../Arduino-Temperature-Control-Library/DallasTemperature.cpp
 CDEFS_PROJ+=-DENABLE_DS18B20 -I../OneWire-2.3.4 -I../Arduino-Temperature-Control-Library 
-CXX_SRC+=DS18B20.cpp
+CXX_SRC+=arduino/DS18B20.cpp
 endif
 endif
 

@@ -20,22 +20,18 @@
 
 TARGETS=unittest ranger readtemp
 
-CARGS=-g -O0 -Wall -I.. -DLIBARDIO_FUNCTS 
-LOBJS=libardio.o
+CARGS=-g -O0 -Wall -I.. -I ../lib -L../lib -DLIBARDIO_FUNCTS 
 
-all: $(LOBJS) $(TARGETS)
+all: $(TARGETS)
 
-unittest : unittest.c $(LOBJS)
-	gcc $(CARGS) -o $@ $< $(LOBJS)
+unittest : unittest.c 
+	gcc $(CARGS) -o $@ $< -lardio
 
-ranger : ranger.c $(LOBJS)
-	gcc $(CARGS) -o $@ $< $(LOBJS)
+ranger : ranger.c 
+	gcc $(CARGS) -o $@ $< -lardio
 
-readtemp : readtemp.c $(LOBJS)
-	gcc $(CARGS) -o $@ $< $(LOBJS)
-
-libardio.o : libardio.c ../libardio.h
-	g++ $(CARGS) -c -o $@ $< 
+readtemp : readtemp.c 
+	gcc $(CARGS) -o $@ $< -lardio
 
 
 clean:
